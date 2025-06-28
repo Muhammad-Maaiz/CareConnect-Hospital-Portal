@@ -28,11 +28,13 @@
                     <div class="custom-alert {{ message.tags }}">
                         <span class="icon">
                         {% if message.tags == 'success' %}
-                            <i class="fas fa-circle-check" style="color:green; font-size:1.5rem;"></i>
+                            <i class="fas fa-circle-check" style="color:green; font-size:2rem;"></i>
                         {% elif message.tags == 'error' %}
-                            <i class="fas fa-circle-xmark" style="color:red; font-size:1.5rem;"></i>
+                            <i class="fas fa-circle-xmark" style="color:red; font-size:2rem;"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="fas fa-circle-exclamation" style="color:#ffc107; font-size:2rem;"></i>
                         {% else %}
-                            <i class="fas fa-circle-info" style="color:#4a90e2; font-size:1.5rem;"></i>
+                            <i class="fas fa-circle-info" style="color:#4a90e2; font-size:2rem;"></i>
                         {% endif %}
                         </span>
                         <span class="msg-text">{{ message }}</span>

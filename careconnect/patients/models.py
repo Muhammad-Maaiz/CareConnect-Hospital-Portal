@@ -16,4 +16,7 @@ class Patient(models.Model):
     phone = models.CharField(max_length=15)
     verification_token = models.UUIDField(default=uuid.uuid4, editable=False)
     is_verified = models.BooleanField(default=False)
+    reset_token = models.UUIDField(default=uuid.uuid4, editable=False)
+    token_used = models.BooleanField(default=False) 
+    token_created_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

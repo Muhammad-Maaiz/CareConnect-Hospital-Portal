@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
+from datetime import timedelta
+from django.utils import timezone
+import uuid
 
 def patient_registration(request):
     if request.method == "POST":
@@ -64,7 +67,6 @@ def patient_login(request):
 
                 # If verified, log in the user
                 login(request, user)
-                messages.success(request, "You are logged in successfully!")
                 return redirect('home')
             except Patient.DoesNotExist:
                 messages.error(request, "No patient account found.")
@@ -88,7 +90,76 @@ def verify_email(request, token):
 
 
 def forget_password(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+
+        try:
+            user = User.objects.get(email=email)
+            patient = Patient.objects.get(user=user)
+
+            # generate token
+            patient.reset_token = uuid.uuid4()
+            patient.token_used = False
+            patient.token_created_at = timezone.now()  # NEW: set timestamp
+            patient._send_reset_email = True
+            patient.save()
+
+            messages.info(request, "Password reset email has been sent to your email address.")
+            return redirect('forget_password')
+
+        except User.DoesNotExist:
+            messages.error(request, "No user found with this email.")
+        except Patient.DoesNotExist:
+            messages.error(request, "No patient profile associated with this email.")
+
     return render(request, "accounts/forget_password.html")
+
+
+def change_password(request, token):
+    try:
+        patient = Patient.objects.get(reset_token=token)
+    except Patient.DoesNotExist:
+        messages.error(request, "Invalid password reset link.")
+        return redirect('forget_password')
+
+    # Check expiry (10 min)
+    if not patient.token_created_at or timezone.now() > patient.token_created_at + timedelta(minutes=10):
+        messages.error(request, "This password reset link has expired. Please request a new one.")
+        return redirect('forget_password')
+
+    # Check already used token
+    if patient.token_used:
+        messages.warning(request, "This password reset link has already been used. Please request a new one.")
+        return redirect('forget_password')
+
+    #  Now allow password change form
+    if request.method == "POST":
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if new_password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+        else:
+            user = patient.user
+            user.set_password(new_password)
+            user.save()
+
+            patient.token_used = True  # Mark token as used
+            patient.save()
+
+            messages.success(request, "Password changed successfully! You can now log in.")
+            return redirect('patient_login')
+
+    # Render only if token is valid, not expired/used
+    return render(request, "accounts/change_password.html", {"token": token})
+
+
+
+
+
+
+
+
 
 # def doctor_registration(request):
 #     if request.method == 'POST':
