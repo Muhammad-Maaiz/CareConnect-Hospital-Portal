@@ -285,6 +285,10 @@ flex: 1;
     margin-bottom: 1rem;
 }
 
+.form-check-input {
+    border: 1px solid grey;
+}
+
 .form-check-input:checked {
     background-color: var(--primary);
     border-color: var(--primary);

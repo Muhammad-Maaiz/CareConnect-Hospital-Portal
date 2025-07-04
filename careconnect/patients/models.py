@@ -15,6 +15,7 @@ class Patient(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     phone = models.CharField(max_length=15)
     verification_token = models.UUIDField(default=uuid.uuid4, editable=False)
+    verification_token_created_at = models.DateTimeField(null=True, blank=True)
     is_verified = models.BooleanField(default=False)
     reset_token = models.UUIDField(default=uuid.uuid4, editable=False)
     token_used = models.BooleanField(default=False) 

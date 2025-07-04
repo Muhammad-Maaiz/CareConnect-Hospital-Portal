@@ -65,7 +65,7 @@ def patient_login(request):
                     messages.error(request, "Please verify your email before logging in.")
                     return redirect('patient_login')
 
-                # If verified, log in the user
+                # If verified log in the user
                 login(request, user)
                 return redirect('home')
             except Patient.DoesNotExist:
@@ -75,17 +75,28 @@ def patient_login(request):
 
     return render(request, 'accounts/patient_login_form.html')
 
-# Check user is verified
+
 def verify_email(request, token):
     patient = get_object_or_404(Patient, verification_token=token)
 
-    if not patient.is_verified:
-        patient.is_verified = True
-        patient.save()
-        messages.success(request, 'Your account has been verified! You can now log in.')
-    else:
+    # Check if already verified
+    if patient.is_verified:
         messages.info(request, 'Your account is already verified.')
+        return redirect('patient_login')
 
+    # Check token expiry 24 hours
+    if not patient.verification_token_created_at or timezone.now() > patient.verification_token_created_at + timedelta(hours=24):
+        # Delete user and patient
+        user = patient.user
+        patient.delete()
+        user.delete()
+        messages.error(request, "This verification link has expired. Please register again.")
+        return redirect('patient_registration')  
+
+    # Otherwise, verify the account
+    patient.is_verified = True
+    patient.save()
+    messages.success(request, 'Your account has been verified! You can now log in.')
     return redirect('patient_login')
 
 

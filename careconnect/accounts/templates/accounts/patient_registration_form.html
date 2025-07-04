@@ -11,6 +11,9 @@
 
 {% block content %}
     <div class="form-container">
+        <i class="fas fa-plus hospital-elements cross-icon"></i>
+        <i class="fas fa-heartbeat hospital-elements heartbeat-icon"></i>
+        
         <div class="form-header">
             <div>
                 <div class="portal-name">
@@ -21,121 +24,137 @@
                 <p class="form-subtitle">Join our network to access premium healthcare services</p>
             </div>
             
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %} 
-                <!-- Profile Picture Upload -->
-                <div class="avatar-upload">
-                    <div class="avatar-edit">
-                        <input type="file" id="imageUpload" name="profile_picture" accept=".png, .jpg, .jpeg" required>
-                        <label for="imageUpload"><i class="fas fa-camera"></i></label>
-                    </div>
-                    <div class="avatar-preview">
-                        <div id="imagePreview">
-                            <i class="fas fa-user fa-2x"></i>
-                        </div>
+            <!-- Profile Picture Upload -->
+            <div class="avatar-upload">
+                <div class="avatar-edit">
+                    <input type="file" id="imageUpload" name="profile_picture" accept=".png, .jpg, .jpeg" required>
+                    <label for="imageUpload"><i class="fas fa-camera"></i></label>
+                </div>
+                <div class="avatar-preview">
+                    <div id="imagePreview">
+                        <i class="fas fa-user fa-2x"></i>
                     </div>
                 </div>
             </div>
+        </div>
 
-            {% if messages %}
-                <div class="messages">
-                    {% for message in messages %}
-                    <div class="custom-alert {{ message.tags }}">
-                        <span class="icon">
-                        {% if message.tags == 'success' %}
-                            <i class="fas fa-circle-check" style="color:green; font-size:2rem;"></i>
-                        {% elif message.tags == 'error' %}
-                            <i class="fas fa-circle-xmark" style="color:red; font-size:2rem;"></i>
-                        {% elif message.tags == 'warning' %}
-                            <i class="fas fa-circle-exclamation" style="color:#ffc107; font-size:2rem;"></i>
-                        {% else %}
-                            <i class="fas fa-circle-info" style="color:#4a90e2; font-size:2rem;"></i>
-                        {% endif %}
-                        </span>
-                        <span class="msg-text">{{ message }}</span>
-                    </div>
-                    {% endfor %}
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="custom-alert {{ message.tags }}">
+                    <span class="icon">
+                    {% if message.tags == 'success' %}
+                        <i class="fas fa-circle-check" style="color:green; font-size:2rem;"></i>
+                    {% elif message.tags == 'error' %}
+                        <i class="fas fa-circle-xmark" style="color:red; font-size:2rem;"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fas fa-circle-exclamation" style="color:#ffc107; font-size:2rem;"></i>
+                    {% else %}
+                        <i class="fas fa-circle-info" style="color:#4a90e2; font-size:2rem;"></i>
+                    {% endif %}
+                    </span>
+                    <span class="msg-text">{{ message }}</span>
                 </div>
-            {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
 
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
             
             <div class="row">
                 <!-- First Name -->
                 <div class="col-md-4 mb-3">
-                    <label for="first_name" class="form-label required-field">First Name</label>
-                    <input type="text" class="form-control" id="first_name" name="first_name" required>
+                    <div class="input-wrapper">
+                        <input type="text" id="first_name" name="first_name" placeholder=" " required>
+                        <label for="first_name" class="required-field">First Name</label>
+                    </div>
                 </div>
                 
                 <!-- Last Name -->
                 <div class="col-md-4 mb-3">
-                    <label for="last_name" class="form-label required-field">Last Name</label>
-                    <input type="text" class="form-control" id="last_name" name="last_name" required>
+                    <div class="input-wrapper">
+                        <input type="text" id="last_name" name="last_name" placeholder=" " required>
+                        <label for="last_name" class="required-field">Last Name</label>
+                    </div>
                 </div>
                 
                 <!-- Username -->
                 <div class="col-md-4 mb-3">
-                    <label for="username" class="form-label required-field">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
+                    <div class="input-wrapper">
+                        <input type="text" id="username" name="username" placeholder=" " required>
+                        <label for="username" class="required-field">Username</label>
+                    </div>
                 </div>
             </div>
             
             <div class="row">
                 <!-- Email -->
                 <div class="col-md-4 mb-3">
-                    <label for="email" class="form-label required-field">Email Address</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" name="email" placeholder=" " required>
+                        <label for="email" class="required-field">Email Address</label>
+                    </div>
                 </div>
                 
                 <!-- Password -->
-                <div class="col-md-4 mb-3 password-input-group">
-                    <label for="password" class="form-label required-field">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                    <button type="button" class="password-toggle" id="togglePassword">
-                        <i class="far fa-eye"></i>
-                    </button>
+                <div class="col-md-4 mb-3">
+                    <div class="input-wrapper password-input-group">
+                        <input type="password" id="password" name="password" placeholder=" " required>
+                        <label for="password" class="required-field">Password</label>
+                        <button type="button" class="password-toggle" id="togglePassword">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- Confirm Password -->
-                <div class="col-md-4 mb-3 password-input-group">
-                    <label for="confirm_password" class="form-label required-field">Confirm Password</label>
-                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-                    <button type="button" class="password-toggle" id="toggleConfirmPassword">
-                        <i class="far fa-eye"></i>
-                    </button>
+                <div class="col-md-4 mb-3">
+                    <div class="input-wrapper password-input-group">
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder=" " required>
+                        <label for="confirm_password" class="required-field">Confirm Password</label>
+                        <button type="button" class="password-toggle" id="toggleConfirmPassword">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             
             <div class="row">
                 <!-- Phone -->
                 <div class="col-md-4 mb-3">
-                    <label for="phone" class="form-label required-field">Phone Number</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                    <div class="input-wrapper">
+                        <input type="tel" id="phone" name="phone" placeholder=" " required>
+                        <label for="phone" class="required-field">Phone Number</label>
+                    </div>
                 </div>
                 
                 <!-- Age -->
                 <div class="col-md-4 mb-3">
-                    <label for="age" class="form-label required-field">Age</label>
-                    <input type="number" class="form-control" id="age" name="age" min="1" max="120" required>
+                    <div class="input-wrapper">
+                        <input type="number" id="age" name="age" min="1" max="120" placeholder=" " required>
+                        <label for="age" class="required-field">Age</label>
+                    </div>
                 </div>
                 
                 <!-- Gender -->
                 <div class="col-md-4 mb-3">
-                    <label for="gender" class="form-label required-field">Gender</label>
-                    <select class="form-select" id="gender" name="gender" required>
-                        <option value="" selected disabled>Select Gender</option>
-                        <option value="M">Male</option>
-                        <option value="F">Female</option>
-                        <option value="O">Other</option>
-                    </select>
+                    <div class="input-wrapper">
+                        <select id="gender" name="gender" required>
+                            <option value="" selected disabled>Select Gender</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                            <option value="O">Other</option>
+                        </select>
+                        <label for="gender" class="required-field">Gender</label>
+                    </div>
                 </div>
             </div>
             
             <!-- Submit Button -->
-            <div class="text-center">
-                <button type="submit" class="btn btn-register">
-                    <i class="fas fa-user-plus me-2"></i> Register Now
-                </button>
-            </div>
+            <button type="submit" class="btn-register">
+                <i class="fas fa-user-plus"></i> Register Now
+            </button>
             
             <div class="login-link">
                 Already have an account? <a href="{% url 'patient_login' %}">Sign in</a>
